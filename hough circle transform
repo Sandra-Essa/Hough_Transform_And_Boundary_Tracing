@@ -1,16 +1,40 @@
 import numpy as np
 import cv2 as cv
+
+#Read image
 img = cv.imread('HoughCircles.jpg',0)
+
+#remove noise
+#src: Source image
+#dst: Destination image, must be the same type as src
+#i: Size of the kernel. Must be odd.
 img = cv.medianBlur(img,5)
-cimg = cv.cvtColor(img,cv.COLOR_GRAY2BGR)
-circles = cv.HoughCircles(img,cv.HOUGH_GRADIENT,1,20,
-                            param1=50,param2=30,minRadius=30,maxRadius=50)
+
+
+
+#cimg = cv.cvtColor(img,cv.COLOR_GRAY2BGR)
+
+#gray: Input image (grayscale).
+#circles: A vector that stores sets of 3 values: xc,yc,r for each detected circle.
+#HOUGH_GRADIENT: Define the detection method. Currently this is the only one available in OpenCV (using canny).
+#dp = 1: The inverse ratio of resolution.
+#min_dist = gray.rows/20: Minimum distance between detected centers.
+#param_1 = 50: Upper threshold for the internal Canny edge detector.
+#param_2 = 30: Threshold for center detection.
+#min_radius = 30: Minimum radius to be detected. If unknown, put zero as default.
+#max_radius = 50: Maximum radius to be detected. If unknown, put zero as default.
+
+circles = cv.HoughCircles(img,cv.HOUGH_GRADIENT,1,20,param1=50,param2=30,minRadius=30,maxRadius=50)
+
+#round circles_ array(a,b,radius)
 circles = np.uint16(np.around(circles))
+
 for i in circles[0,:]:
     # draw the outer circle
     cv.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2)
     # draw the center of the circle
     cv.circle(cimg,(i[0],i[1]),2,(0,0,255),3)
+    
 cv.imshow('detected circles',cimg)
 cv.waitKey(0)
 cv.destroyAllWindows()
